@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: "DM Sans", sans-serif;
+    overflow-x: clip;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 0%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 0%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 0%;
+
+        /* #ED2553 Vibrant Pink-Red */
+        --primary: 346 85% 56%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 350 100% 85%;
+        --secondary-foreground: 0 0% 0%;
+        --muted: 350 100% 95%;
+        --muted-foreground: 0 0% 20%;
+        --accent: 350 100% 85%;
+        --accent-foreground: 0 0% 0%;
+        --destructive: 0 91% 71%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 0%;
+        --input: 0 0% 0%;
+        --ring: 346 85% 56%;
+        --radius: 8px;
+
+        /* Form Elements & Report Modal */
+        --form-border: 0 0% 0%;
+        --form-focus: 346 85% 56%;
+        --report-button: 346 85% 56%;
+        --report-button-foreground: 0 0% 100%;
+
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        --background: 0 0% 10%;
+        --foreground: 0 0% 100%;
+        --card: 0 0% 15%;
+        --card-foreground: 0 0% 100%;
+        --popover: 0 0% 15%;
+        --popover-foreground: 0 0% 100%;
+
+        --primary: 346 85% 56%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 350 100% 85%;
+        --secondary-foreground: 0 0% 0%;
+        --muted: 0 0% 20%;
+        --muted-foreground: 0 0% 80%;
+        --accent: 350 100% 85%;
+        --accent-foreground: 0 0% 0%;
+        --destructive: 0 91% 71%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 100%;
+        --input: 0 0% 100%;
+        --ring: 346 85% 56%;
+
+        --form-border: 0 0% 100%;
+        --form-focus: 346 85% 56%;
+        --report-button: 346 85% 56%;
+        --report-button-foreground: 0 0% 100%;
+
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+}
+
+@layer utilities {
+    .cartoon-shadow {
+        box-shadow: 2px 0px 0px 0px rgba(0, 0, 0, 1);
+    }
+
+    .cartoon-shadow-sm {
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+    }
+
+    .cartoon-shadow-lg {
+        box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+    }
+
+    .cartoon-border {
+        border: 3px solid black;
+    }
+
+    .cartoon-border-sm {
+        border: 2px solid black;
+    }
+
+    .bg-crowd-pattern {
+        background-image: url('https://cdn.prod.website-files.com/5e51b3b0337309d672efd94c/5e5346352c16e8d69e1649f2_cover_hero-1.svg');
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes wiggle {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-3deg);
+    }
+
+    75% {
+        transform: rotate(3deg);
+    }
+}
+
+@keyframes avatar-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-10px) rotate(-5deg);
+    }
+
+    75% {
+        transform: translateY(-5px) rotate(5deg);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100%) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slide-up 0.4s ease-out;
+}
+
+.animate-bounce-in {
+    animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-wiggle {
+    animation: wiggle 0.5s ease-in-out;
+}
+
+.animate-avatar-bounce {
+    animation: avatar-bounce 2s infinite ease-in-out;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.cartoon-text {
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+

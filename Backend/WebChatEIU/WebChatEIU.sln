@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37301.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatEIU", "WebChatEIU.csproj", "{91C5BC5F-0EC2-4395-93AF-44899DD009FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatEIU.Tests", "..\WebChatEIU.Tests\WebChatEIU.Tests.csproj", "{8D8D28B1-6D9A-474C-B069-565E6A7AE5DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91C5BC5F-0EC2-4395-93AF-44899DD009FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C5BC5F-0EC2-4395-93AF-44899DD009FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C5BC5F-0EC2-4395-93AF-44899DD009FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C5BC5F-0EC2-4395-93AF-44899DD009FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D8D28B1-6D9A-474C-B069-565E6A7AE5DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D8D28B1-6D9A-474C-B069-565E6A7AE5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D8D28B1-6D9A-474C-B069-565E6A7AE5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D8D28B1-6D9A-474C-B069-565E6A7AE5DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE886CAF-8052-4B08-85A6-0C57900BD4E4}
+	EndGlobalSection
+EndGlobal

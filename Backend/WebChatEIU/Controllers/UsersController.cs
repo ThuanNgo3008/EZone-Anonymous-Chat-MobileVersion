@@ -1,0 +1,256 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using WebChatEIU.Data;
+using WebChatEIU.DTOs;
+using WebChatEIU.Models;
+
+namespace WebChatEIU.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
+
+        public UsersController(ApplicationDbContext context, IConfiguration configuration)
+        {
+            _context = context;
+            _configuration = configuration;
+        }
+
+
+        // ====================== Register/Log in ============================================
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        {
+            // Kiểm tra email này đã tồn tại chưa, nếu đã tồn tại thì báo email đã tồn tại
+            var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
+            if (emailExists)
+            {
+                return BadRequest("This email address has already been used");
+            }
+            // Sau khi kiểm tra email chưa tồn tại, tiến hành quá trình băm mật khẩu bằng BCrypt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+            // Mã xác thực sẽ random
+            Random rand = new Random();
+            string activationCode = rand.Next(100000, 999999).ToString();
+            // tạo người dùng mới 
+            var newUser = new Users
+            {
+                Fullname = dto.Fullname,
+                Email = dto.Email,
+                Password = passwordHash,
+                MajorCode = dto.MajorCode,
+                ActiveCode = activationCode,
+                IsActive = false,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Registration successful!",
+                activationCode = activationCode
+            });
+        }
+
+        [HttpGet("activate")]
+        public async Task<IActionResult> ActivateByGet([FromQuery] string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest("Activation code cannot be empty");
+            }
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.ActiveCode == code);
+
+            if (user == null)
+            {
+                return BadRequest("The activation code is incorrect or does not exist");
+            }
+
+            if (user.IsActive)
+            {
+                return BadRequest("This account was already activated");
+            }
+
+            // Cập nhật trạng thái kích hoạt tài khoản
+            user.IsActive = true;
+            user.ActiveCode = null; // Xóa mã kích hoạt sau khi dùng xong để bảo mật
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "You can now log in." });
+        }
+
+        [HttpPost("activate")]
+        public async Task<IActionResult> ActivateByPost([FromBody] ActivateDto dto)
+        {
+            // Tìm người dùng có mã kích hoạt trùng với mã trong body JSON gửi lên
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.ActiveCode == dto.Code);
+
+            if (user == null)
+            {
+                return BadRequest("The activation code is incorrect or does not exist");
+            }
+
+            if (user.IsActive)
+            {
+                return BadRequest("This account was already activated");
+            }
+
+            // Cập nhật trạng thái kích hoạt tài khoản
+            user.IsActive = true;
+            user.ActiveCode = null;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "You can now log in." });
+        }
+
+        //[HttpPost("login")]
+        //public async Task<IActionResult> LoginByPost([FromBody] LoginDto dto)
+        //{
+        //    var user = await _context.Users
+        //        .Include(u => u.UserRoles)
+        //        .ThenInclude(ur => ur.Role)
+        //        .FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+        //    if (user == null)
+        //    {
+        //        return BadRequest("Incorrect email or password!");
+        //    }
+
+        //    if (user.IsActive == false)
+        //    {
+        //        return BadRequest("Your account is not yet activated!");
+        //    }
+
+        //    if (user.IsBanned == true)
+        //    {
+        //        return BadRequest("Your account has been banned for violating community standards!");
+        //    }
+
+
+        //    bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.Password);
+        //    if (!isPasswordValid)
+        //    {
+        //        return BadRequest("Incorrect email or password!");
+        //    }
+
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        //        new Claim("userId", user.UserId.ToString())
+        //    };
+
+        //    claims.AddRange(
+        //        user.UserRoles.Select(ur =>
+        //            new Claim(ClaimTypes.Role, ur.Role.Name))
+        //    );
+
+        //    var key = new SymmetricSecurityKey(
+        //        Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+        //    );
+
+        //    var creds = new SigningCredentials(
+        //        key,
+        //        SecurityAlgorithms.HmacSha256
+        //    );
+
+        //    var token = new JwtSecurityToken(
+        //        issuer: _configuration["Jwt:Issuer"],
+        //        audience: _configuration["Jwt:Audience"],
+        //        claims: claims,
+        //        expires: DateTime.Now.AddHours(3),
+        //        signingCredentials: creds
+        //    );
+
+        //    var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        //    return Ok(new
+        //    {
+        //        message = "Login successful!",
+        //        token = jwt,
+        //        userId = user.UserId,
+        //        fullname = user.Fullname,
+        //        avatarUrl = user.AvatarUrl
+        //    });
+        //}
+
+
+        // ============================ Update =======================================================
+        [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult> UpdateUsers(int id, [FromForm] UpdateUserDto dto)
+        {
+            var existing = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == id && u.IsActive);
+
+            if (existing == null)
+            {
+                return NotFound("No user found to update");
+            }
+
+            existing.Fullname = dto.Fullname;
+            existing.Gender = dto.Gender;
+            existing.MajorCode = dto.MajorCode;
+            existing.SocialLink = dto.SocialLink;
+
+            if (dto.AvatarFile != null && dto.AvatarFile.Length > 0)
+            {
+                var uploadFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "avatar_images"
+                );
+
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                var avatarFileName =
+                    Guid.NewGuid().ToString()
+                    + Path.GetExtension(dto.AvatarFile.FileName);
+
+                var fullPath = Path.Combine(uploadFolder, avatarFileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await dto.AvatarFile.CopyToAsync(stream);
+                }
+
+                existing.AvatarUrl = "/avatar_images/" + avatarFileName;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Users>> GetUser(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id && u.IsActive);
+            if (user == null) return NotFound("Not Found");
+
+            return Ok(user);
+        }
+
+
+    }
+}
