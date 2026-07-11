@@ -21,7 +21,11 @@
 - JWT Authentication + BCrypt (hash mật khẩu)
 - Swagger (API docs)
 
-**Mobile** — `Mobile_Frontend/`
+**Frontend (Web)** — `Frontend/Chat/`
+- React (Vite) + Tailwind/Radix UI
+- `@microsoft/signalr` (client kết nối ChatHub)
+
+**Mobile** — `Mobile/`
 - React Native (khởi tạo bằng **React Native CLI thuần**, không dùng Expo Go)
 - React Navigation (điều hướng)
 - `@microsoft/signalr` (client kết nối ChatHub)
@@ -30,12 +34,14 @@
 ## Cấu trúc thư mục
 
 ```
-EZone---Anonymous-Chat/
+EZone/
 ├── Backend/
-│   └── WebChatEIU/          # ASP.NET Core Web API + SignalR Hub
-├── Mobile_Frontend/
-│   ├── README.md            # kế hoạch task chi tiết (backend bổ sung + danh sách screen mobile)
-│   └── Mobile_Frontend/      # source code React Native
+│   ├── WebChatEIU/           # ASP.NET Core Web API + SignalR Hub
+│   └── WebChatEIU.Tests/     # unit test backend
+├── Frontend/
+│   └── Chat/                 # source code web (React)
+├── Mobile/                   # source code React Native
+├── README_Mobile.md          # kế hoạch task chi tiết (backend bổ sung + danh sách screen mobile)
 └── README.md                 # file này
 ```
 
@@ -49,9 +55,16 @@ dotnet run
 ```
 Kiểm tra `appsettings.json` để cấu hình connection string SQL Server. Sau khi chạy, xem API docs tại `/swagger`.
 
+### Frontend (Web)
+```bash
+cd Frontend/Chat
+npm install
+npm run dev
+```
+
 ### Mobile
 ```bash
-cd Mobile_Frontend/Mobile_Frontend
+cd Mobile
 npm install
 npx react-native run-android
 ```

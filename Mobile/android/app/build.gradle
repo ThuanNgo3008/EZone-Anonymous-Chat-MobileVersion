@@ -78,6 +78,15 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.mobile_frontend"
+
+    // Force a newer CMake (bundled ninja fixes the Windows "filename longer than
+    // 260 characters" bug that the default 3.22.1 ninja hits on deeply nested paths.
+    externalNativeBuild {
+        cmake {
+            version "3.31.6"
+        }
+    }
+
     defaultConfig {
         applicationId "com.mobile_frontend"
         minSdkVersion rootProject.ext.minSdkVersion
