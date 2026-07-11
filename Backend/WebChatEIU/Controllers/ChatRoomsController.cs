@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebChatEIU.Data;
 using WebChatEIU.Models;
@@ -27,6 +28,40 @@ namespace WebChatEIU.Controllers
             if (room == null)
             {
                 return NotFound();
+            }
+
+            return Ok(room);
+        }
+
+        [HttpGet("history/{userId}")]
+        public async Task<IActionResult> GetHistory(int userId)
+        {
+            var rooms = await _context.ChatRooms
+                .Where(r =>
+                    (r.User1Id == userId || r.User2Id == userId)
+                    && r.Status == ChatRooms.RoomStatus.Closed)
+                .OrderByDescending(r => r.UpdatedAt)
+                .ToListAsync();
+
+            return Ok(rooms);
+        }
+
+        [Authorize]
+        [HttpGet("{roomId}")]
+        public async Task<IActionResult> GetRoomDetail(int roomId)
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+
+            var room = await _context.ChatRooms.FindAsync(roomId);
+
+            if (room == null)
+            {
+                return NotFound("Room not found");
+            }
+
+            if (room.User1Id != userId && room.User2Id != userId)
+            {
+                return BadRequest("User is not in this room");
             }
 
             return Ok(room);

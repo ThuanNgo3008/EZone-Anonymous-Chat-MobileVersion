@@ -190,11 +190,49 @@ namespace WebChatEIU.Controllers
         //}
 
 
+        // ============================ Profile (self) ===============================================
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound("Not Found");
+            }
+
+            return Ok(new
+            {
+                userId = user.UserId,
+                email = user.Email,
+                fullname = user.Fullname,
+                gender = user.Gender,
+                majorCode = user.MajorCode,
+                avatarUrl = user.AvatarUrl,
+                socialLink = user.SocialLink,
+                isActive = user.IsActive,
+                isBanned = user.IsBanned,
+                createdDate = user.CreatedDate
+            });
+        }
+
+
         // ============================ Update =======================================================
+        [Authorize]
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult> UpdateUsers(int id, [FromForm] UpdateUserDto dto)
         {
+            int currentUserId = int.Parse(User.FindFirst("userId").Value);
+
+            if (id != currentUserId)
+            {
+                return Forbid();
+            }
+
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserId == id && u.IsActive);
 

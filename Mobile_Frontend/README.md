@@ -38,8 +38,11 @@ Code hiện có (không cần đụng vào, chỉ tham khảo): `Backend/WebChat
 - [ ] `GET /api/Admin/stats` — đếm nhanh: tổng số user, số report đang Pending, số phòng đang Active. Chỉ cần `COUNT` đơn giản qua `_context`.
 
 ### A7. Hạ tầng để mobile kết nối được (khác localhost)
-- [ ] Cấu hình backend lắng nghe trên `0.0.0.0` (không chỉ `localhost`) để điện thoại thật/emulator trong cùng mạng LAN gọi được API — kiểm tra `launchSettings.json` / `Kestrel` binding.
-- [ ] Ghi lại địa chỉ IP LAN của máy chạy backend (VD `http://192.168.x.x:5xxx`) để cấu hình base URL bên app mobile. **Ghi rõ vào README này hoặc file `.env.example` khi có.**
+- [x] Cấu hình backend lắng nghe trên `0.0.0.0` (không chỉ `localhost`) để điện thoại thật/emulator trong cùng mạng LAN gọi được API — đã sửa `applicationUrl` trong `launchSettings.json`.
+- [x] Ghi lại địa chỉ IP LAN của máy chạy backend để cấu hình base URL bên app mobile:
+  - **Base URL hiện tại (Wi-Fi, máy chạy backend):** `http://192.168.202.61:5044` (HTTP) / `https://192.168.202.61:7281` (HTTPS)
+  - Lưu ý: IP này đổi mỗi khi máy chạy backend kết nối lại Wi-Fi / đổi mạng — kiểm tra lại bằng `ipconfig` (tìm dòng `IPv4 Address` của adapter `Wi-Fi`) nếu app mobile không gọi được API.
+  - Điện thoại thật/emulator phải **cùng mạng Wi-Fi/LAN** với máy chạy backend thì mới gọi được, không dùng `localhost`/`127.0.0.1`.
 
 ---
 
