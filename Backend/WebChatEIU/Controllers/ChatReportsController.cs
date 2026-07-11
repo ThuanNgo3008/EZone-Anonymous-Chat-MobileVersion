@@ -51,6 +51,20 @@ namespace WebChatEIU.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyReports()
+        {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+
+            var reports = await _context.ChatReports
+                .Where(r => r.ReporterId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return Ok(reports);
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("{reportId}/ban")]
         public async Task<IActionResult> BanReportedUser(int reportId)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebChatEIU.Data;
 using WebChatEIU.Models;
 
@@ -15,9 +16,12 @@ namespace WebChatEIU.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPost("{roomId}/{userId}")]
         public async Task<IActionResult> RequestReveal(int roomId, int userId)
         {
+            int currentUserId = int.Parse(User.FindFirst("userId").Value);
+
             var room = await _context.ChatRooms.FindAsync(roomId);
 
             if (room == null)
@@ -30,11 +34,11 @@ namespace WebChatEIU.Controllers
                 return BadRequest("Affinity score is not enough to reveal identity");
             }
 
-            if (room.User1Id == userId)
+            if (room.User1Id == currentUserId)
             {
                 room.User1Revealed = true;
             }
-            else if (room.User2Id == userId)
+            else if (room.User2Id == currentUserId)
             {
                 room.User2Revealed = true;
             }
@@ -55,14 +59,22 @@ namespace WebChatEIU.Controllers
             return Ok(room);
         }
 
+        [Authorize]
         [HttpGet("{roomId}")]
         public async Task<IActionResult> GetRevealStatus(int roomId)
         {
+            int userId = int.Parse(User.FindFirst("userId").Value);
+
             var room = await _context.ChatRooms.FindAsync(roomId);
 
             if (room == null)
             {
                 return NotFound("Room not found");
+            }
+
+            if (room.User1Id != userId && room.User2Id != userId)
+            {
+                return BadRequest("User is not in this room");
             }
 
             return Ok(new
@@ -76,9 +88,12 @@ namespace WebChatEIU.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet("{roomId}/identity/{userId}")]
         public async Task<IActionResult> GetRevealedIdentity(int roomId, int userId)
         {
+            int currentUserId = int.Parse(User.FindFirst("userId").Value);
+
             var room = await _context.ChatRooms.FindAsync(roomId);
 
             if (room == null)
@@ -86,7 +101,7 @@ namespace WebChatEIU.Controllers
                 return NotFound("Room not found");
             }
 
-            if (room.User1Id != userId && room.User2Id != userId)
+            if (room.User1Id != currentUserId && room.User2Id != currentUserId)
             {
                 return BadRequest("User is not in this room");
             }
@@ -97,7 +112,7 @@ namespace WebChatEIU.Controllers
             }
 
             int targetUserId =
-                room.User1Id == userId ? room.User2Id : room.User1Id;
+                room.User1Id == currentUserId ? room.User2Id : room.User1Id;
 
             var targetUser = await _context.Users.FindAsync(targetUserId);
 

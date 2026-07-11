@@ -53,7 +53,7 @@ Kiểm tra `appsettings.json` để cấu hình connection string SQL Server. Sa
 ```bash
 cd Mobile_Frontend/Mobile_Frontend
 npm install
-npm run android
+npx react-native run-android
 ```
 Cần cài Android SDK + máy ảo (hoặc thiết bị thật) chạy sẵn. Base URL của backend cần trỏ tới IP LAN của máy chạy backend (không dùng `localhost` vì mobile không chạy chung máy với backend).
 

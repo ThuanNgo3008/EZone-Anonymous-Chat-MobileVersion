@@ -28,7 +28,16 @@ namespace WebChatEIU.Hubs
 
             if (!string.IsNullOrEmpty(userIdString))
             {
-                int userId = int.Parse(userIdString);
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    await Clients.Caller.SendAsync(
+                        "ViolationDetected",
+                        "Invalid userId!"
+                    );
+
+                    Context.Abort();
+                    return;
+                }
 
                 var currentUser = await _context.Users.FindAsync(userId);
 
@@ -252,6 +261,20 @@ namespace WebChatEIU.Hubs
             {
                 await Clients.Client(partner)
                     .SendAsync("PartnerDisconnected");
+            }
+
+            var room = await _context.ChatRooms.FindAsync(roomId);
+
+            if (room != null && room.Status != ChatRooms.RoomStatus.Closed)
+            {
+                var messages = _context.Messages.Where(m => m.RoomId == roomId);
+
+                _context.Messages.RemoveRange(messages);
+
+                room.Status = ChatRooms.RoomStatus.Closed;
+                room.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
             }
 
             await Groups.RemoveFromGroupAsync(
