@@ -1,36 +1,31 @@
-
 export const colors = {
-  light: {
-    background: '#FFFFFF',
-    foreground: '#000000',
-    primary: '#ED2553',
-    primaryForeground: '#FFFFFF',
-    muted: '#FFE5EA',
-    mutedForeground: '#333333',
-    secondary: '#FFB2BF',
-    secondaryForeground: '#000000',
-    destructive: '#F87272',
-    destructiveForeground: '#FFFFFF',
-    border: '#000000',
-  },
-  dark: {
-    background: '#1A1A1A',
-    foreground: '#FFFFFF',
-    primary: '#ED2553',
-    primaryForeground: '#FFFFFF',
-    muted: '#333333',
-    mutedForeground: '#CCCCCC',
-    secondary: '#FFB2BF',
-    secondaryForeground: '#000000',
-    destructive: '#F87272',
-    destructiveForeground: '#FFFFFF',
-    border: '#FFFFFF',
-  },
+  primary: '#ED2553',
+  primaryDark: '#c91843',
+  secondary: '#ffd1dc',
+  background: '#fff7fa',
+  card: '#ffffff',
+  text: '#111111',
+  muted: '#666666',
+  border: '#000000',
+  danger: '#ef4444',
+  success: '#22c55e',
+  input: '#f8f8f8',
 };
 
-export const disabledColors = {
-  background: '#D1D5DB',
-  foreground: '#6B7280',
+export const spacing = {
+  xs: 6,
+  sm: 10,
+  md: 16,
+  lg: 24,
+  xl: 32,
 };
 
-export const radius = 8;
+export const cartoonShadow = {
+  borderWidth: 2,
+  borderColor: colors.border,
+  shadowColor: '#000',
+  shadowOpacity: 1,
+  shadowRadius: 0,
+  shadowOffset: { width: 3, height: 3 },
+  elevation: 5,
+};

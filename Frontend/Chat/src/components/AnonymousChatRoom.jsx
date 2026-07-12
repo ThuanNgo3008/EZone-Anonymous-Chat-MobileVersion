@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Lock, AlertTriangle, LogOut, Send, ChevronDown, MessageSquareDashed, Users } from 'lucide-react';
@@ -28,6 +28,7 @@ import TypingIndicator from '@/components/TypingIndicator.jsx';
 import { getMessages } from '@/services/messageService';
 import { createReport } from '@/services/reportService';
 import { requestReveal, getRevealedIdentity } from '@/services/revealService';
+import { BASE_URL, API_BASE_URL } from '@/constants/config';
 
 const AnonymousChatRoom = () => {
     const navigate = useNavigate();
@@ -294,7 +295,7 @@ const AnonymousChatRoom = () => {
                 await connectionRef.current.stop();
             }
 
-            await fetch("https://localhost:44352/api/Auth/logout", {
+            await fetch(`${API_BASE_URL}/Auth/logout`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -309,7 +310,7 @@ const AnonymousChatRoom = () => {
         localStorage.removeItem("fullname");
         localStorage.removeItem("roles");
 
-        window.location.href = "https://localhost:44352/login.html";
+        window.location.href = `${BASE_URL}/login.html`;
     };
 
     return (
@@ -459,7 +460,7 @@ const AnonymousChatRoom = () => {
                             {/* Reason Dropdown */}
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="report-reason" className="text-sm font-bold text-foreground">
-                                    What’s breaking the Zone? <span className="text-destructive">*</span>
+                                    Whatâ€™s breaking the Zone? <span className="text-destructive">*</span>
                                 </label>
                                 <div className="relative">
                                     <select
@@ -529,7 +530,7 @@ const AnonymousChatRoom = () => {
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel className="cartoon-border-sm hover:scale-105 active:scale-95 transition-transform font-bold">Ở Lại</AlertDialogCancel>
+                            <AlertDialogCancel className="cartoon-border-sm hover:scale-105 active:scale-95 transition-transform font-bold">á»ž Láº¡i</AlertDialogCancel>
                             <AlertDialogAction
                                 onClick={handleConfirmLeave}
                                 className="bg-secondary text-secondary-foreground cartoon-border-sm cartoon-shadow-sm hover:bg-secondary/90 hover:scale-105 active:scale-95 transition-transform font-bold"
@@ -555,13 +556,13 @@ const AnonymousChatRoom = () => {
                                     <div className="w-24 h-24 rounded-full cartoon-border cartoon-shadow bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-5xl animate-bounce-in">
                                         {revealedIdentity.avatarUrl ? (
                                             <img
-                                                src={`https://localhost:44352${revealedIdentity.avatarUrl}`}
+                                                src={`${BASE_URL}${revealedIdentity.avatarUrl}`}
                                                 alt="Avatar"
                                                 className="w-full h-full object-cover rounded-full"
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-5xl rounded-full">
-                                                👤
+                                                ðŸ‘¤
                                             </div>
                                         )}
                                     </div>

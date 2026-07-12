@@ -246,9 +246,6 @@ namespace WebChatEIU.Hubs
 
         public async Task LeaveRoom()
         {
-            string partner =
-                _matchmakingService.GetPartner(Context.ConnectionId);
-
             int roomId = _matchmakingService.GetRoomIdOrDefault(Context.ConnectionId);
 
             if (roomId == 0)
@@ -257,11 +254,13 @@ namespace WebChatEIU.Hubs
                 return;
             }
 
-            if (partner != null)
-            {
-                await Clients.Client(partner)
-                    .SendAsync("PartnerDisconnected");
-            }
+            // Dùng SignalR Group (giống OnDisconnectedAsync) thay vì
+            // _matchmakingService.GetPartner — dictionary đó chỉ chứa
+            // connectionId lúc match ở màn Waiting, đã disconnect từ khi
+            // chuyển sang phòng chat (connection mới qua JoinRoom) nên
+            // luôn trả về null ở đây.
+            await Clients.GroupExcept(roomId.ToString(), Context.ConnectionId)
+                .SendAsync("PartnerDisconnected");
 
             var room = await _context.ChatRooms.FindAsync(roomId);
 
