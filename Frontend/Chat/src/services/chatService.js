@@ -1,4 +1,5 @@
 import * as signalR from "@microsoft/signalr";
+import { HUB_URL } from "../constants/config";
 
 export function createChatConnection() {
     const params = new URLSearchParams(window.location.search);
@@ -14,7 +15,7 @@ export function createChatConnection() {
     console.log("SignalR userId:", userId);
 
     return new signalR.HubConnectionBuilder()
-        .withUrl(`https://localhost:44352/chatHub?userId=${userId}`)
+        .withUrl(`${HUB_URL}?userId=${userId}`)
         .withAutomaticReconnect()
         .build();
 }
